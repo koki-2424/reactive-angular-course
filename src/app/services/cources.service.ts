@@ -21,7 +21,7 @@ export class CourcesService {
   }
 
   saveCource(courceId: string, changes: Partial<Course>):Observable<any>{
-    return this.http.put(`/api/cources/${courceId}`, changes)
+    return this.http.put(`/api/courses/${courceId}`, changes)
     .pipe(
       shareReplay()
     )
