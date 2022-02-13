@@ -7,6 +7,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 import { CourcesService } from '../services/cources.service';
 import { LoadingService } from '../loading/loading.service';
+import { MessagesService } from '../messages/messages.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private courcesService: CourcesService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private messageService: MessagesService
   ) {
 
   }
@@ -34,7 +36,13 @@ export class HomeComponent implements OnInit {
   reloadCources() {
     const courses$ = this.courcesService.loadAllCources()
       .pipe(
-        map(courses => courses.sort(sortCoursesBySeqNo))
+        map(courses => courses.sort(sortCoursesBySeqNo)),
+        catchError(err => {
+          const message = "Could notn load courses";
+          this.messageService.showErrors(message);
+          console.log(err);
+          return throwError(err);
+        })
       );
 
     const loadcourses$ = this.loadingService.showLoaderUntilCompleted<Course[]>(courses$)
